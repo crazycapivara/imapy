@@ -11,6 +11,19 @@ with Imapy(host) as mbox:
    uids, msgs = mbox[5]
    for msg in msgs:
       print msg["Subject"], msg["From"], msg["Date"]
+
+# ==========
+
+from imapy.imapy import create_engine
+from imapy.utils import load_account, Criterion
+
+# read account data from JSON-config file
+account_data = load_account("config.json", account="default")
+mbox = create_engine(**account_data)
+
+uids, msgs = mbox(Criterion.UNSEEN)
+[...]
+mbox.kill()
       
 to be continued [...]
 ```
