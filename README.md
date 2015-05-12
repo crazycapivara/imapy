@@ -15,13 +15,14 @@ with Imapy(host) as mbox:
 # ==========
 
 from imapy.imapy import create_engine
-from imapy.utils import load_account, Criterion
+from imapy.utils import load_config
+import imapy.criterion
 
 # read account data from JSON-config file
-account_data = load_account("config.json", account="default")
+account_data = load_config("config.json")["accounts"]["default"]
 mbox = create_engine(**account_data)
 
-uids, msgs = mbox(Criterion.UNSEEN)
+uids, msgs = mbox(criterion.UNSEEN)
 [...]
 mbox.kill()
       
