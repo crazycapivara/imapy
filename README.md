@@ -20,8 +20,8 @@ import imapy.criterion
 
 # read account data from JSON-config file
 account_data = load_config("config.json")["accounts"]["default"]
-mbox = create_engine(**account_data)
 
+mbox = create_engine(**account_data)
 uids, msgs = mbox(criterion.UNSEEN)
 [...]
 mbox.kill()
