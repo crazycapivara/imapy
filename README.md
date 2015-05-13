@@ -16,15 +16,19 @@ with Imapy(host) as mbox:
 
 from imapy.imapy import create_engine
 from imapy.utils import load_config
-import imapy.criterion
+from imapy import criteria
 
 # read account data from JSON-config file
 account_data = load_config("config.json")["accounts"]["default"]
 
 mbox = create_engine(**account_data)
-uids, msgs = mbox(criterion.UNSEEN)
+uids, msgs = mbox(criteria.UNSEEN)
 [...]
 mbox.kill()
+
+# using encoded password
+from base64 import b64decode
+mbox = create_engine(decoder=b64decode, **account_data)
       
 to be continued [...]
 ```
