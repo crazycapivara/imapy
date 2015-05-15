@@ -3,12 +3,12 @@ Python imap package on top of imaplib
 
 # Usage
 ```Python
-from imapy.imapy import Imapy
+from imapy import Imapy
 
 # fetch latest messages and print header to terminal
 with Imapy(host) as mbox:
    mbox.login(user, password)
-   uids, msgs = mbox[5]
+   uids, msgs = mbox(count=5)
    for msg in msgs:
       print msg["Subject"], msg["From"], msg["Date"]
 
@@ -29,6 +29,12 @@ mbox.kill()
 # using encoded password
 from base64 import b64decode
 mbox = create_engine(decoder=b64decode, **account_data)
+
+#change mailbox and parse header from fetched messages
+from imapy.utils import parse_header
+uids, msgs = mbox["INBOX.Sent"](count=10)
+   for msg in msgs:
+      print parse_header(msg)
       
 to be continued [...]
 ```
