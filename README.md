@@ -1,5 +1,6 @@
 # imapy
-Python imap package on top of imaplib
+(Another) Python imap package on top of imaplib with the intention to keep things simple but flexible,
+therefor messages are more or less not parsed by default.
 
 # Usage
 ```Python
