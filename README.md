@@ -5,7 +5,7 @@ Therefor, searching and fetching, dealing with mailboxes etc. is simplified but 
 uids, msgs = mbox["INBOX"](UNSEEN)
 ```
 So you can iterate over found messages and apply several parsing functions to them suitable to your needs.
-The included utility module "imapy.utils" contains already a lot of parsing functions, hence, also parsing or rather extracting needed information can be simply done with a few lines of code ...
+The included utility module "imapy.utils" already contains a lot of parsing functions, hence, also parsing or rather extracting needed information can be simply done with a few lines of code ...
 ```Python
 from imapy import utils
 [...]
