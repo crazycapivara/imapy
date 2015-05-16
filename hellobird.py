@@ -4,8 +4,7 @@
     imapy example(s)
 """
 
-from imapy import Imapy
-from imapy import utils
+from imapy import Imapy, utils
 
 HOST = "imap.gmail.com"
 UID  = "You"
