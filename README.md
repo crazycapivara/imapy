@@ -11,10 +11,10 @@ from imapy import utils
 [...]
 for msg in msgs:
    content = utils.parse_content(msg)["plain"]
-   utils.save_raw_msg(folder="backup")
+   utils.save_raw_msg(msg, folder="backup")
    [...]
 ```
-This modular approach (more function than class based) allows adding needed parsing functions not already included in "imapy.utils" in an easy way. Extend the lib to your needs!
+This modular approach (more function than class based) allows adding needed parsing functions not already included in "imapy.utils" or combining functions to a new one in an easy way. Extend the lib to your needs!
 
 # Usage
 ```Python
