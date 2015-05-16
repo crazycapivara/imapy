@@ -29,7 +29,7 @@ with Imapy(host) as mbox:
 
 # ==========
 
-from imapy.imapy import create_engine
+from imapy import create_engine
 from imapy.utils import load_config
 from imapy import criteria
 
