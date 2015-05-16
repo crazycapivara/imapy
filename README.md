@@ -4,7 +4,7 @@ therefor, searching and fetching is simplified but messages are more or less not
 (they are Message objects as parsed by the python standard email module).
 As search result (only) a message generator is returned, so that you can iterate over found messages and apply
 several parsing functions on them. Hence, the included utilitiy module "imapy.utils" contains already a lot of
-parsing functions ...
+parsing functions ... this modular approach (more function than class based) allows adding needed parsing functions not already included in imapy.utils in an easy way. Extend the lib to your needs!
 
 # Usage
 ```Python
