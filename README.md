@@ -1,11 +1,17 @@
 # imapy
 (Another) Python imap package on top of imaplib with the intention to keep things simple but flexible.
-Therefor, searching and fetching, dealing with mailboxes etc. is simplified but messages are only parsed in a minimal way by default. They are returned as (simple) `email.message.Message` objects created by the python standard email module in the form of a generator.
+Therefor, searching and fetching, dealing with mailboxes etc. is simplified but messages are only parsed in a minimal way by default. They are returned as (simple) `email.message.Message` objects created by the python standard email module in the form of a `generator`.
 ```Python
-uids, msgs = mbox["INBOX"](UNSEEN)
+>>> uids, msgs = mbox["INBOX"](UNSEEN)
+>>> len(uids)
+5
+>>> uids
+['845', '846', '847', '848', '849']
+>>> msgs
+<generator object <genexpr> at 0x9427eb4>
 ```
 So you can iterate over found messages and apply several parsing functions to them suitable to your needs.
-The included utility module "imapy.utils" already contains a lot of parsing functions, hence, also parsing or rather extracting needed information can be simply done with a few lines of code ...
+The included utility module `imapy.utils` already contains a lot of parsing functions. Hence, also parsing or rather extracting needed information can be simply done with a few lines of code ...
 ```Python
 from imapy import utils
 [...]
