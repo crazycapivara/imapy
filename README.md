@@ -35,9 +35,8 @@ with Imapy(host) as mbox:
 
 # ==========
 
-from imapy import create_engine
+from imapy import create_engine, criteria
 from imapy.utils import load_config
-from imapy import criteria
 
 # read account data from JSON-config file
 account_data = load_config("config.json")["accounts"]["default"]
