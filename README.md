@@ -47,10 +47,14 @@ uids, msgs = mbox(criteria.UNSEEN)
 [...]
 mbox.kill()
 
+# ==========
+
 # using encoded password
 from base64 import b64decode
 
 mbox = create_engine(decoder=b64decode, **account_data)
+
+# ==========
 
 #change mailbox and parse header from fetched messages
 from imapy.utils import parse_header
