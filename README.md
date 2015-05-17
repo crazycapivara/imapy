@@ -49,10 +49,12 @@ mbox.kill()
 
 # using encoded password
 from base64 import b64decode
+
 mbox = create_engine(decoder=b64decode, **account_data)
 
 #change mailbox and parse header from fetched messages
 from imapy.utils import parse_header
+
 uids, msgs = mbox["INBOX.Sent"](count=10)
    for i, msg in enumerate(msgs):
       print uids[i], parse_header(msg)
