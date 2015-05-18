@@ -1,6 +1,6 @@
 # imapy
-(Another) Python imap package on top of imaplib with the intention to keep things simple but flexible.
-Therefor, searching and fetching, dealing with mailboxes etc. is simplified but messages are only parsed in a minimal way by default. They are returned as (simple) `email.message.Message` objects created by the python standard email module in the form of a `generator`.
+Python imap package on top of imaplib with the intention to keep things simple but flexible.
+Therefor, searching and fetching messages, dealing with mailboxes etc. got a simplified API but messages are only parsed in a minimal way by default. They are returned as (simple) `email.message.Message` objects created by the python standard email module in the form of a `generator`.
 ```Python
 >>> uids, msgs = mbox["INBOX"](UNSEEN)
 >>> len(uids)
