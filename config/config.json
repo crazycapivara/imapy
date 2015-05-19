@@ -1,8 +1,10 @@
 {
   "accounts":{
-    "default":{}
-  },
-  {
-    "alternative":{}
+    "default":{
+      
+    },
+    "alternative":{
+      
+    }
   }
 }
