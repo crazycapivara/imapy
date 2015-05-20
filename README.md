@@ -1,6 +1,6 @@
 # imapy
 Imapy is a python imap package on top of imaplib with the intention to keep things simple but flexible.
-Therefor, searching, fetching and parsing messages as well as dealing with mailbox stuff got a simplified API but by default messages are only parsed in a minimal way. They are returned as (simple) `email.message.Message` objects created by the python standard email module in the form of a `generator`.
+Therefor, dealing with imap stuff and parsing messages got a simplified API but by default messages are only parsed in a minimal way. They are returned as `email.message.Message` objects created by the python standard email module in the form of a `generator`.
 ```Python
 >>> uids, msgs = mbox["INBOX"](UNSEEN)
 >>> len(uids)
@@ -11,7 +11,7 @@ Therefor, searching, fetching and parsing messages as well as dealing with mailb
 <generator object <genexpr> at 0x9427eb4>
 ```
 So you can iterate over found messages and apply several parsing functions to them suitable to your needs.
-The included utility module `imapy.utils` already contains a lot of parsing functions. Hence, also parsing or rather extracting needed information can be simply done with a few lines of code ...
+The included utility module `imapy.utils` already contains a lot of such functions. Hence, also parsing or rather extracting needed information can be simply done with a few lines of code ...
 ```Python
 from imapy import utils
 [...]
@@ -59,8 +59,8 @@ mbox = create_engine(decoder=b64decode, **account_data)
 from imapy.utils import parse_header
 
 uids, msgs = mbox["INBOX.Sent"](count=10)
-   for i, msg in enumerate(msgs):
-      print uids[i], parse_header(msg)
+   for uid, msg in zip(uids, msgs):
+      print uid, parse_header(msg)
       
 to be continued [...]
 ```
