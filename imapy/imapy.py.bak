@@ -1,0 +1,156 @@
+# -*- coding: utf-8 -*-
+"""
+	imapy.imapy
+	~~~~~~~~~~~
+	Main/Core module of imapy to connect to imap server
+	and deal with folders and messages. It is implemented on top of imaplib.
+	Search results are returned in the form of a generator
+	and messages itself as Message objects as returned/parsed by
+	the standard Python email lib (email.message.Message).
+	Further parsing of messages is done via imapy.utils module. 
+
+	:copyright: (c) 2015 by Stefan Kuethe
+	:licence: GPLv3 see LICENCE.md for more details
+"""
+
+__author__ = "Stefan Kuethe"
+__version__ = "0.1.1"
+__copyright__ = "(c) copyright 2015 by Stefan Kuethe"
+__licence__ = "GNU GPLv3"
+
+from imaplib import IMAP4, IMAP4_SSL
+from email import message_from_string
+from .utils import split_mbox_names # could be done here!
+import criterion, msgparts
+
+def create_engine(host, user, password, ssl=False, decoder=None):
+	"""Establish connection to default mailbox (INBOX).
+	
+	In case password is encoded, you must pass the decoder
+	function as optional argument. 
+	"""
+	if ssl:
+		mbox = Imapy_SSL(host)
+	else:
+		mbox = Imapy(host)
+	if decoder:
+		password = decoder(password)
+	mbox.login(user, password)
+	return mbox
+
+class Imapy:
+	def __init__(self, host):
+		self.imap = IMAP4(host)
+
+	def __enter__(self):
+		return self
+
+	def __exit__(self, type, value, traceback):
+		self.kill()
+
+	def __call__(self, *args, **kwargs):
+		"""shortcut to :func: `query`""" 
+		return self.query(*args, **kwargs)
+
+	def __getitem__(self, mbox_name):
+		"""shortcut to :func: `select_mbox`"""
+		self.select_mbox(mbox_name)
+		return self
+
+	def get_uids(self, criteria=criterion.ALL):
+		"""Return list of found uids for given search criteria."""
+		return self.imap.uid("search", None, criteria)[1][0].split()
+
+	def get_by_uid(self, uid, msg_parts='(BODY.PEEK[HEADER.FIELDS (SUBJECT FROM DATE TO)])'):
+		"""Fetch selected message parts for given uid.
+
+		:param msg_parts: string in the form of ``'(BODY.PEEK[...])'``,
+		                  use ``'(BODY.PEEK[])'`` or ``'(RFC822)'`` to return the complete message
+		:returns: `email.message.Message` object
+		"""
+		status, msg = self.imap.uid("fetch", uid, msg_parts)
+		return message_from_string(msg[0][1])
+
+	# maybe tuple including uid should be returned!?
+	def get_result(self, uids, msg_parts):
+		for uid in uids:
+			yield self.get_by_uid(uid, msg_parts)
+
+
+	def query(self, criteria=criterion.ALL, count=False, reverse=False, minimal=False):
+		"""Return uids and message generator for found messages.
+
+		:param criteria: string containing all search criteria e. g. ``'(UNSEEN) (FROM "gabbo")'``
+		:param count: number of messages to be returned
+		:param reverse: if ``True`` messages are returned the other way round
+		:param minimal: if ``True`` only header(s) will be fetched
+		"""
+		uids = self.get_uids(criteria)
+		if count and len(uids) > 0:
+			uids = uids[-count:]
+		if reverse:
+			uids.reverse()
+		if minimal:
+			msg_parts = "BODY.PEEK[HEADER.FIELDS (SUBJECT FROM DATE TO)]"
+		else:
+			msg_parts = "BODY.PEEK[]"
+		return (uids, self.get_result(uids, msg_parts))
+
+	# `origin`functions can be deleted!? 
+	def get_origin(self):
+		"""Return `imaplib.IMAP4` or `imaplib.IMAP4_SLL` object used by `Imapy`."""
+		return self.imap
+
+	def origin(self, func_name, *args, **kwargs):
+		"""Call `imaplib.IMAP4.func_name(*args, **kwargs)`.
+
+		You can also use `Imapy.imap.func_name` instead ...
+		e. g. mbox = Imapy(host)
+		      mbox.imap.list()
+		"""
+		return getattr(self.imap, func_name)(*args, **kwargs)
+
+	def select_mbox(self, mbox):
+		"""Change mailbox (folder).
+		
+		:param mbox: original raw (special utf-7 encoded) mbox name
+		             as returned by :func: `get_mbox_names` (with ``decode=False``)
+		"""
+		return self.imap.select(mbox)
+
+	def get_mbox_names(self, decode=False):
+		"""Return list of mailbox names.
+
+		:param decode: if ``True`` mailbox names are decoded using `special utf-7 charset definition`
+		               (important, if you got international mailbox names with special characters)
+
+		:todo: decoding is not implemented yet, decoder from IMAPClient will be used!
+		"""
+		#return parse_mboxes(self.imap.list()[1], decode)
+		pass
+
+	def login(self, user, password):
+		"""Log in to server and select default mailbox.
+
+		:return: status tuple
+		"""
+		status_login = self.imap.login(user, password)
+		status_select = self.imap.select()
+		return (status_login, status_select)
+
+	def kill(self):
+		"""Close mailbox and log out (from server).
+
+		:return: status tuple
+		"""
+		status_close = self.imap.close()
+		status_logout = self.imap.logout()
+		return (status_logout, status_return)
+
+class Imapy_SSL(Imapy):
+	def __init__(self, host, *args, **kwargs):
+		"""Use ssl to connect to imap server.
+
+		for ``*args`` and ``**kwargs`` see documentation of imaplib.IMAP4_SSL
+		"""
+		self.imap = IMAP4_SSL(host, *args, **kwargs)
